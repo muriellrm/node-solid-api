@@ -1,4 +1,5 @@
 import { prisma } from "#/lib/prisma";
+import { registerUseCase } from "#/use-cases/register";
 import { hash } from "bcryptjs";
 import type { RouteHandlerMethod } from "fastify";
 import { z } from "zod";
@@ -10,26 +11,13 @@ export const register: RouteHandlerMethod = async (request, reply) => {
     password: z.string().min(6),
   });
 
-  const { password, email, name } = bodySchema.parse(request.body);
-  const password_hash = await hash(password, 6);
+  const requestBody = bodySchema.parse(request.body);
 
-  const userWithSameEmail = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-
-  if (userWithSameEmail) {
+  try {
+    await registerUseCase(requestBody);
+  } catch {
     return reply.status(409).send();
   }
-
-  await prisma.user.create({
-    data: {
-      email, 
-      name,
-      password_hash,
-    },
-  });
 
   return reply.status(201).send();
 };
