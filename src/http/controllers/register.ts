@@ -1,6 +1,5 @@
-import { prisma } from "#/lib/prisma";
-import { registerUseCase } from "#/use-cases/register";
-import { hash } from "bcryptjs";
+import { PrismaUsersRepository } from "#/repositories/prisma/prisma-users-repository";
+import { RegisterUseCase } from "#/use-cases/register";
 import type { RouteHandlerMethod } from "fastify";
 import { z } from "zod";
 
@@ -14,7 +13,9 @@ export const register: RouteHandlerMethod = async (request, reply) => {
   const requestBody = bodySchema.parse(request.body);
 
   try {
-    await registerUseCase(requestBody);
+    const usersRepository = new PrismaUsersRepository();
+    const registerUseCase = new RegisterUseCase(usersRepository);
+    await registerUseCase.execute(requestBody);
   } catch {
     return reply.status(409).send();
   }
