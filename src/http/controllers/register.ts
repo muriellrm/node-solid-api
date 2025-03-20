@@ -11,17 +11,17 @@ export const register: RouteHandlerMethod = async (request, reply) => {
     password: z.string().min(6),
   });
 
-  const requestBody = bodySchema.parse(request.body);
+  const { email, name, password } = bodySchema.parse(request.body);
 
   try {
     const usersRepository = new PrismaUsersRepository();
     const registerUseCase = new RegisterUseCase(usersRepository);
-    await registerUseCase.execute(requestBody);
+    await registerUseCase.execute({ email, name, password });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });
     }
-    
+
     throw error;
   }
 
