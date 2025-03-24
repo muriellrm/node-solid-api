@@ -3,6 +3,9 @@ import type { GymsRepository } from "#/repositories/gyms-repository";
 import type { CheckIn } from "@prisma/client";
 import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 import { getDistanceBetweenCoordinates } from "#/utils/get-distance-between-coordinates";
+import { ensurePromiseOrThrow, ensurePromiseThrow } from "#/utils/ensure-promise";
+import { MaxDistanceError } from "./errors/max-distance-error";
+import { MaxCheckInExceededError } from "./errors/max-check-in-exceeded-error";
 
 interface CheckInRequest {
   userId: string;
@@ -19,7 +22,7 @@ export class CheckInUseCase {
     private checkInsRepository: CheckInsRepository,
     private gymsRepository: GymsRepository
   ) {}
-  private MAX_DISTANCE = 0.1;
+  private MAX_DISTANCE_IN_KILOMETERS = 0.1;
 
   async execute({
     userId,
@@ -27,11 +30,11 @@ export class CheckInUseCase {
     userLatitude,
     userLongitude,
   }: CheckInRequest): Promise<CheckInResponse> {
-    const gym = await this.gymsRepository.findById(gymId);
 
-    if (!gym) {
-      throw new ResourceNotFoundError();
-    }
+    const gym = await ensurePromiseOrThrow({
+      promise: this.gymsRepository.findById(gymId),
+      error: ResourceNotFoundError,
+    });
 
     const distance = getDistanceBetweenCoordinates(
       {
@@ -44,19 +47,18 @@ export class CheckInUseCase {
       }
     );
 
-    if (distance > this.MAX_DISTANCE) {
-      throw new Error("You`re to much distant from the gym");
+    if (distance > this.MAX_DISTANCE_IN_KILOMETERS) {
+      throw new MaxDistanceError();
     }
-
-    const checkInOnSameDate = await this.checkInsRepository.findByUserIdOnDate(
-      userId,
-      new Date()
-    );
-
-    if (checkInOnSameDate) {
-      throw new Error();
-    }
-
+   
+    await ensurePromiseThrow({
+      promise: this.checkInsRepository.findByUserIdOnDate(
+        userId,
+        new Date()
+      ),
+      error: MaxCheckInExceededError,
+    });
+      
     const checkIn = await this.checkInsRepository.create({
       gym_id: gymId,
       user_id: userId,

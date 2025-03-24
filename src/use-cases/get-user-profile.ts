@@ -1,6 +1,7 @@
 import type { UsersRepository } from "#/repositories/users-repository";
 import type { User } from "@prisma/client";
 import { ResourceNotFoundError } from "./errors/resource-not-found-error";
+import { ensurePromiseOrThrow } from "#/utils/ensure-promise";
 
 interface GetUserProfileRequest {
   userId: string;
@@ -15,10 +16,12 @@ export class GetUserProfile {
   async execute({
     userId,
   }: GetUserProfileRequest): Promise<GetUserProfileResponse> {
-    const user = await this.usersRepository.findById(userId);
-    if (!user) {
-      throw new ResourceNotFoundError();
-    }
+
+    const user = await ensurePromiseOrThrow({
+      promise: this.usersRepository.findById(userId),
+      error: ResourceNotFoundError,
+    });
+
     return {
       user,
     };
