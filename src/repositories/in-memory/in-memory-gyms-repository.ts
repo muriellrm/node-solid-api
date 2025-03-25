@@ -23,4 +23,14 @@ export class InMemoryGymsRepository implements GymsRepository {
 
     return gym;
   }
+
+  async findAll(query: string, page: number) {
+    const pageSize = 20;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+
+    return this.items
+      .filter((item) => item.title.includes(query))
+      .slice(startIndex, endIndex);
+  }
 }

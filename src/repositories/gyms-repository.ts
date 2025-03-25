@@ -1,6 +1,7 @@
 import type { Gym, Prisma } from "@prisma/client";
 
-export interface GymsRepository {  
+export interface GymsRepository {
   findById(id: string): Promise<Gym | null>;
-  create(data: Prisma.GymCreateInput): Promise<Gym>
+  create(data: Prisma.GymCreateInput): Promise<Gym>;
+  findAll(query: string, page: number): Promise<Gym[]>;
 }
