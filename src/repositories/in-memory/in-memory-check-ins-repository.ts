@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 import type { CheckInsRepository } from "../check-ins-repository";
 
-export class InMemoryCheckInsRepository implements CheckInsRepository {
+export class InMemoryCheckInsRepository implements CheckInsRepository {  
   public items: CheckIn[] = [];
 
   async create({
@@ -51,7 +51,21 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       .slice(startIndex, endIndex);
   }
 
-  async countByUserId(userId: string): Promise<number> {
+  async countByUserId(userId: string) {
     return this.items.filter((item) => item.user_id === userId).length;
+  }
+
+  async findById(id: string) {
+    return this.items.find((item) => item.id === id) || null;
+  }
+
+  async save(checkIn: CheckIn) {
+    const checkInIndex = this.items.findIndex((item) => item.id === checkIn.id);
+
+    if(checkInIndex >= 0 ) {
+      return this.items[checkInIndex] = checkIn;
+    }
+
+    return checkIn;
   }
 }
