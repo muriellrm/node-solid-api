@@ -3,15 +3,15 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryUsersRepository } from "#/repositories/in-memory/in-memory-users-repository";
 import { ResourceNotFoundError } from "./errors/resource-not-found-error";
-import { GetUserProfile } from "./get-user-profile";
+import { GetUserProfileUseCase } from "./get-user-profile";
 
 let usersRepository: InMemoryUsersRepository;
-let sut: GetUserProfile;
+let sut: GetUserProfileUseCase;
 
 describe("Get User Profile Use Case", () => {
   beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository();
-    sut = new GetUserProfile(usersRepository);
+    sut = new GetUserProfileUseCase(usersRepository);
   });
 
   it("should be able get user profile", async () => {
