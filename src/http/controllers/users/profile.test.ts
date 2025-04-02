@@ -2,23 +2,14 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import request from "supertest";
 
 import { app } from "#/app";
+import { createAndAuthenticateUser } from "#/utils/test/create-and-authenticate-user";
 
 describe("Profile Controller", () => {
   beforeEach(async () => await app.ready());
   afterAll(async () => await app.close());
 
   it("should be able to get user profile", async () => {
-    await request(app.server).post("/users").send({
-      email: "example@example.com",
-      name: "Example Name",
-      password: "123456",
-    });
-
-    const authenticate = await request(app.server).post("/sessions").send({
-      email: "example@example.com",
-      password: "123456",
-    });
-    const { token } = authenticate.body;
+    const { token } = await createAndAuthenticateUser(app);
 
     const sut = await request(app.server)
       .get("/profile")
