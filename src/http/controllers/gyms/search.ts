@@ -3,12 +3,12 @@ import type { RouteHandlerMethod } from "fastify";
 import { z } from "zod";
 
 export const search: RouteHandlerMethod = async (request, reply) => {
-  const paramsSchema = z.object({
+  const querySchema = z.object({
     query: z.string(),
     page: z.coerce.number().min(1).default(1),
   });
 
-  const { query, page } = paramsSchema.parse(request.body);
+  const { query, page } = querySchema.parse(request.query);
 
   const searchGymsUseCase = makeSearchGymsUseCase();
   const { gyms } = await searchGymsUseCase.execute({

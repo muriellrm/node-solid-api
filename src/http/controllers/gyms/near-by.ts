@@ -3,7 +3,7 @@ import type { RouteHandlerMethod } from "fastify";
 import { z } from "zod";
 
 export const nearBy: RouteHandlerMethod = async (request, reply) => {
-  const paramsSchema = z.object({
+  const querySchema = z.object({
     userLatitude: z.number().refine((value) => {
       Math.abs(value) <= 90;
     }),
@@ -12,7 +12,7 @@ export const nearBy: RouteHandlerMethod = async (request, reply) => {
     }),
   });
 
-  const { userLatitude, userLongitude } = paramsSchema.parse(request.body);
+  const { userLatitude, userLongitude } = querySchema.parse(request.query);
 
   const getAllNeaByUseCase = makeGetAllNearByGymsUseCase();
   const { gyms } = await getAllNeaByUseCase.execute({
