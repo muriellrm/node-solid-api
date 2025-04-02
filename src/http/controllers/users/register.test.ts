@@ -3,7 +3,7 @@ import request from "supertest";
 
 import { app } from "#/app";
 
-describe("Register Controller", () => {
+describe("[Users] - Register Controller", () => {
   beforeEach(async () => await app.ready());
   afterAll(async () => await app.close());
 

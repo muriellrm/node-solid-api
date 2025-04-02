@@ -3,7 +3,7 @@ import request from "supertest";
 
 import { app } from "#/app";
 
-describe("Authenticate Controller", () => {
+describe("[Users] - Authenticate Controller", () => {
   beforeEach(async () => await app.ready());
   afterAll(async () => await app.close());
 

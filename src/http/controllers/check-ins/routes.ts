@@ -8,9 +8,9 @@ import { metrics } from "./metrics";
 export const checkInsRoutes = async (app: FastifyInstance) => {
   app.addHook("onRequest", verifyJwt);
 
-  app.get("check-ins/history", history);
-  app.get("check-ins/metrics", metrics);
+  app.get("/check-ins/history", history);
+  app.get("/check-ins/metrics", metrics);
 
-  app.post("check-ins", create);
-  app.patch("check-ins/:checkInId/validate", validate);
+  app.post("/check-ins", create);
+  app.patch("/check-ins/:checkInId/validate", validate);
 };

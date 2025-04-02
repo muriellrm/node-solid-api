@@ -4,20 +4,16 @@ import { z } from "zod";
 
 export const nearBy: RouteHandlerMethod = async (request, reply) => {
   const querySchema = z.object({
-    userLatitude: z.number().refine((value) => {
-      Math.abs(value) <= 90;
-    }),
-    userLongitude: z.number().refine((value) => {
-      Math.abs(value) <= 180;
-    }),
+    latitude: z.coerce.number().refine((value) => Math.abs(value) <= 90),
+    longitude: z.coerce.number().refine((value) => Math.abs(value) <= 180),
   });
 
-  const { userLatitude, userLongitude } = querySchema.parse(request.query);
+  const { latitude, longitude } = querySchema.parse(request.query);
 
   const getAllNeaByUseCase = makeGetAllNearByGymsUseCase();
   const { gyms } = await getAllNeaByUseCase.execute({
-    userLatitude,
-    userLongitude,
+    userLatitude: latitude,
+    userLongitude: longitude,
   });
 
   return reply.status(200).send({ gyms });

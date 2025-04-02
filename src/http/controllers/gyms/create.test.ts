@@ -4,24 +4,25 @@ import request from "supertest";
 import { app } from "#/app";
 import { createAndAuthenticateUser } from "#/utils/test/create-and-authenticate-user";
 
-describe("[Users] - Profile Controller", () => {
+describe("[Gyms] - Create Controller", () => {
   beforeEach(async () => await app.ready());
   afterAll(async () => await app.close());
 
-  it("should be able to get user profile", async () => {
+  it("should be able to create a gym", async () => {
     const { token } = await createAndAuthenticateUser(app);
 
     const sut = await request(app.server)
-      .get("/profile")
+      .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
-      .send();
+      .send({
+        description: "Test",
+        id: "gym-01",
+        phone: "11999999",
+        title: "Testing Gym",
+        latitude: -28.2332516,
+        longitude: -48.6593139,
+      });
 
-    expect(sut.statusCode).toEqual(200);
-    expect(sut.body).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        email: "example@example.com",
-      })
-    );
+    expect(sut.statusCode).toEqual(201);
   });
 });

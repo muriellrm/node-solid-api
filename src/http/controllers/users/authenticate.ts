@@ -26,7 +26,7 @@ export const authenticate: RouteHandlerMethod = async (request, reply) => {
 
     return reply.status(200).send({ token });
   } catch (error) {
-    if (error instanceof InvalidCredentialsError) {
+    if (error instanceof InvalidCredentialsError) {      
       return reply.status(400).send({ message: error.message });
     }
 

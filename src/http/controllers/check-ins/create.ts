@@ -5,12 +5,8 @@ import { z } from "zod";
 export const create: RouteHandlerMethod = async (request, reply) => {
   const bodySchema = z.object({
     gymId: z.string().uuid(),
-    latitude: z.number().refine((value) => {
-      Math.abs(value) <= 90;
-    }),
-    longitude: z.number().refine((value) => {
-      Math.abs(value) <= 180;
-    }),
+    latitude: z.number().refine((value) => Math.abs(value) <= 90),
+    longitude: z.number().refine((value) => Math.abs(value) <= 180),
   });
 
   const { latitude, longitude, gymId } = bodySchema.parse(request.body);
