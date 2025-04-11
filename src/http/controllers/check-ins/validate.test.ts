@@ -40,8 +40,8 @@ describe("[Check-ins] - Validate Controller", () => {
 
     checkIn = await prisma.checkIn.findUniqueOrThrow({
       where: {
-        id: checkIn.id
-      }
+        id: checkIn.id,
+      },
     });
 
     expect(checkIn.validated_at).toEqual(expect.any(Date));
