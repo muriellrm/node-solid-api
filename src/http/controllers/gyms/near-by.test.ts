@@ -9,7 +9,7 @@ describe("[Gyms] - Near By Controller", () => {
   afterAll(async () => await app.close());
 
   it("should be able to get a near by gym", async () => {
-    const { token } = await createAndAuthenticateUser(app);
+    const { token } = await createAndAuthenticateUser(app, true);
 
     await request(app.server)
       .post("/gyms")

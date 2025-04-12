@@ -9,7 +9,7 @@ describe("[Gyms] - Create Controller", () => {
   afterAll(async () => await app.close());
 
   it("should be able to create a gym", async () => {
-    const { token } = await createAndAuthenticateUser(app);
+    const { token } = await createAndAuthenticateUser(app, true);
 
     const sut = await request(app.server)
       .post("/gyms")
