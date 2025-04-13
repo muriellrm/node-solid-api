@@ -13,9 +13,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          - POSTGRES_USER=docker
-          - POSTGRES_PASSWORD=docker
-          - POSTGRES_DB=ignitenode03
+          POSTGRES_USER: docker
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: ignitenode03
    
     steps:
       - uses: actions/checkout@v4
